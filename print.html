@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="01.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="02.html"><strong aria-hidden="true">2.</strong> Setup & Installation</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="01.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="02.html"><strong aria-hidden="true">2.</strong> Setup & Installation</a></li><li class="chapter-item expanded "><a href="03.html"><strong aria-hidden="true">3.</strong> Django Basics</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -417,6 +417,110 @@ python manage.py runserver
 <p>Visit <code>http://127.0.0.1:8000/</code> to see your project running.</p>
 <h2 id="conclusion-1"><a class="header" href="#conclusion-1">Conclusion</a></h2>
 <p>You have successfully installed Python and Django, set up a virtual environment, created a new Django project, and created a Django application. This foundation will enable you to start developing web applications using Django. In the next tutorial, we will dive deeper into creating views, templates, and handling URLs.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="django-basics"><a class="header" href="#django-basics">Django Basics</a></h1>
+<p>In this tutorial, we will create a new Django project to build an Asian tours agency management system. This application will help manage tours, destinations, and bookings across Asia.</p>
+<h2 id="setting-up-the-project"><a class="header" href="#setting-up-the-project">Setting Up the Project</a></h2>
+<h3 id="step-1-create-project-directory"><a class="header" href="#step-1-create-project-directory">Step 1: Create Project Directory</a></h3>
+<p>First, navigate to the directory where you want to create your project. Open your terminal and use the <code>cd</code> command:</p>
+<pre><code class="language-sh">cd path/to/your/desired/directory
+</code></pre>
+<h3 id="step-2-activate-virtual-environment"><a class="header" href="#step-2-activate-virtual-environment">Step 2: Activate Virtual Environment</a></h3>
+<p>Activating a virtual environment ensures that dependencies are isolated. Use the following command to activate your virtual environment:</p>
+<pre><code class="language-sh">pipenv shell
+</code></pre>
+<p>If you haven't created a virtual environment yet, you can do so by running:</p>
+<pre><code class="language-sh">pipenv --python 3.8  # Replace 3.8 with your desired Python version
+</code></pre>
+<h3 id="step-3-install-django"><a class="header" href="#step-3-install-django">Step 3: Install Django</a></h3>
+<p>With your virtual environment activated, install Django:</p>
+<pre><code class="language-sh">pipenv install django
+</code></pre>
+<h3 id="step-4-create-django-project"><a class="header" href="#step-4-create-django-project">Step 4: Create Django Project</a></h3>
+<p>Create a new Django project named <code>WorldTour</code>:</p>
+<pre><code class="language-sh">django-admin startproject WorldTour
+</code></pre>
+<p>Navigate into the project directory:</p>
+<pre><code class="language-sh">cd WorldTour
+</code></pre>
+<h3 id="step-5-create-django-application"><a class="header" href="#step-5-create-django-application">Step 5: Create Django Application</a></h3>
+<p>Inside your project, create a new application named <code>AsiaToursAgency</code>:</p>
+<pre><code class="language-sh">python manage.py startapp AsiaToursAgency
+</code></pre>
+<h2 id="understanding-project-structure"><a class="header" href="#understanding-project-structure">Understanding Project Structure</a></h2>
+<p>Your project directory should now look like this:</p>
+<pre><code>WorldTour/
+    manage.py
+    WorldTour/
+        __init__.py
+        settings.py
+        urls.py
+        wsgi.py
+    AsiaToursAgency/
+        __init__.py
+        admin.py
+        apps.py
+        models.py
+        tests.py
+        views.py
+        migrations/
+</code></pre>
+<h3 id="key-files-and-directories"><a class="header" href="#key-files-and-directories">Key Files and Directories</a></h3>
+<ol>
+<li><strong><code>manage.py</code></strong>: A command-line utility that lets you interact with your project.</li>
+<li><strong><code>settings.py</code></strong>: Contains all project settings.</li>
+<li><strong><code>urls.py</code></strong>: Defines URL patterns for the project.</li>
+<li><strong><code>apps.py</code></strong>: Configuration file for the <code>AsiaToursAgency</code> app.</li>
+<li><strong><code>models.py</code></strong>: Defines the data models.</li>
+<li><strong><code>views.py</code></strong>: Handles the request/response logic.</li>
+<li><strong><code>admin.py</code></strong>: Configuration for the Django admin interface.</li>
+<li><strong><code>migrations/</code></strong>: Contains database migrations.</li>
+</ol>
+<h2 id="configuring-the-application"><a class="header" href="#configuring-the-application">Configuring the Application</a></h2>
+<h3 id="step-1-register-the-application"><a class="header" href="#step-1-register-the-application">Step 1: Register the Application</a></h3>
+<p>Open <code>WorldTour/settings.py</code> and add <code>AsiaToursAgency</code> to the <code>INSTALLED_APPS</code> list:</p>
+<pre><code class="language-python">INSTALLED_APPS = [
+    ...
+    'AsiaToursAgency.apps.AsiaToursAgencyConfig',
+]
+</code></pre>
+<h3 id="step-2-define-a-simple-view"><a class="header" href="#step-2-define-a-simple-view">Step 2: Define a Simple View</a></h3>
+<p>In <code>AsiaToursAgency/views.py</code>, create a simple view:</p>
+<pre><code class="language-python">from django.http import HttpResponse
+
+def index(request):
+    return HttpResponse("Asia Tours Agency")
+</code></pre>
+<h3 id="step-3-create-url-configuration"><a class="header" href="#step-3-create-url-configuration">Step 3: Create URL Configuration</a></h3>
+<p>Create a <code>urls.py</code> file inside <code>AsiaToursAgency</code> directory:</p>
+<pre><code class="language-python">from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+]
+</code></pre>
+<h3 id="step-4-include-application-urls"><a class="header" href="#step-4-include-application-urls">Step 4: Include Application URLs</a></h3>
+<p>Modify <code>WorldTour/urls.py</code> to include the URLs of <code>AsiaToursAgency</code>:</p>
+<pre><code class="language-python">from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('asiatours/', include('AsiaToursAgency.urls')),
+]
+</code></pre>
+<h2 id="running-the-server"><a class="header" href="#running-the-server">Running the Server</a></h2>
+<h3 id="step-1-start-the-development-server"><a class="header" href="#step-1-start-the-development-server">Step 1: Start the Development Server</a></h3>
+<p>Ensure you are in the project root directory where <code>manage.py</code> is located. Start the server:</p>
+<pre><code class="language-sh">python manage.py runserver
+</code></pre>
+<h3 id="step-2-access-the-application"><a class="header" href="#step-2-access-the-application">Step 2: Access the Application</a></h3>
+<p>Open a web browser and navigate to:</p>
+<pre><code>http://127.0.0.1:8000/asiatours/
+</code></pre>
+<p>You should see "Asia Tours Agency" displayed.</p>
+<h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
+<p>In this tutorial, we created a Django project and an application within it. We set up the necessary configurations and created a simple view to ensure everything is working correctly. In the next tutorial, we will dive deeper into models, databases, and migrations to expand our agency's functionality.</p>
 
                     </main>
 
