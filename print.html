@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="01.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="02.html"><strong aria-hidden="true">2.</strong> Setup & Installation</a></li><li class="chapter-item expanded "><a href="03.html"><strong aria-hidden="true">3.</strong> Django Basics</a></li><li class="chapter-item expanded "><a href="04.html"><strong aria-hidden="true">4.</strong> Database Setup</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="01.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="02.html"><strong aria-hidden="true">2.</strong> Setup & Installation</a></li><li class="chapter-item expanded "><a href="03.html"><strong aria-hidden="true">3.</strong> Django Basics</a></li><li class="chapter-item expanded "><a href="04.html"><strong aria-hidden="true">4.</strong> Database Setup</a></li><li class="chapter-item expanded "><a href="05.html"><strong aria-hidden="true">5.</strong> Adding Database Records</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -683,6 +683,64 @@ class Migration(migrations.Migration):
 <p>In this tutorial, we have set up the database for our Django application, created models, and applied migrations. We also explored how to interact with the database using Django's ORM.</p>
 <p>In the next part, we will explore how to interact with this database directly through Django shell and add tour records. Additionally, we will discuss the database configurations in <code>settings.py</code> and how to switch to different database management systems.</p>
 <p>Make sure to commit your changes and keep your project structure organized as you progress through your Django development journey.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="adding-database-records"><a class="header" href="#adding-database-records">Adding Database Records</a></h1>
+<p>In this tutorial, we will focus on adding records to the database in Django. We will use the Django shell, which provides an interface for interacting directly with our Django project's database. This allows us to create, read, update, and delete records with ease. The Django shell is an essential tool for testing and managing your database.</p>
+<h2 id="setting-up-the-django-shell"><a class="header" href="#setting-up-the-django-shell">Setting Up the Django Shell</a></h2>
+<h3 id="step-1-open-the-django-shell"><a class="header" href="#step-1-open-the-django-shell">Step 1: Open the Django Shell</a></h3>
+<p>First, ensure that your virtual environment is activated. Then, you can open the Django shell by running the following command:</p>
+<pre><code class="language-bash">python manage.py shell
+</code></pre>
+<p>This command opens an interactive shell specifically tied to your Django project.</p>
+<h3 id="step-2-importing-models"><a class="header" href="#step-2-importing-models">Step 2: Importing Models</a></h3>
+<p>Within the shell, you can import your models. For this tutorial, we will assume you have a model named <code>Tour</code> in an app called <code>AsiaTours</code>.</p>
+<pre><code class="language-python">from asia_tours.models import Tour
+</code></pre>
+<h2 id="creating-records"><a class="header" href="#creating-records">Creating Records</a></h2>
+<h3 id="step-3-creating-an-instance-of-a-model"><a class="header" href="#step-3-creating-an-instance-of-a-model">Step 3: Creating an Instance of a Model</a></h3>
+<p>You can create a new instance of the <code>Tour</code> model by assigning values to its attributes. Let's create a tour with specific details:</p>
+<pre><code class="language-python">tour1 = Tour(origin_country='Japan', destination_country='China', number_of_nights=10, price=1500)
+</code></pre>
+<h3 id="step-4-saving-the-record-to-the-database"><a class="header" href="#step-4-saving-the-record-to-the-database">Step 4: Saving the Record to the Database</a></h3>
+<p>After creating the instance, you need to save it to the database:</p>
+<pre><code class="language-python">tour1.save()
+</code></pre>
+<p>By calling the <code>save()</code> method, Django writes the record to the database.</p>
+<h3 id="step-5-accessing-attributes-of-the-record"><a class="header" href="#step-5-accessing-attributes-of-the-record">Step 5: Accessing Attributes of the Record</a></h3>
+<p>You can access the attributes of the saved record to verify the values:</p>
+<pre><code class="language-python">print(tour1.origin_country)  # Output: Japan
+print(tour1.destination_country)  # Output: China
+print(tour1.number_of_nights)  # Output: 10
+print(tour1.price)  # Output: 1500
+</code></pre>
+<h3 id="step-6-implementing-a-string-representation"><a class="header" href="#step-6-implementing-a-string-representation">Step 6: Implementing a String Representation</a></h3>
+<p>To improve the readability of your model instances, you can define a <code>__str__</code> method in the <code>Tour</code> model. This method returns a human-readable string representation of the model instance.</p>
+<p>Edit your <code>Tour</code> model as follows:</p>
+<pre><code class="language-python">class Tour(models.Model):
+    origin_country = models.CharField(max_length=100)
+    destination_country = models.CharField(max_length=100)
+    number_of_nights = models.IntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f'Tour {self.id}: {self.origin_country} to {self.destination_country}, {self.number_of_nights} nights, ${self.price}'
+</code></pre>
+<h3 id="step-7-exiting-and-re-entering-the-shell"><a class="header" href="#step-7-exiting-and-re-entering-the-shell">Step 7: Exiting and Re-entering the Shell</a></h3>
+<p>To apply the changes to your model, exit the shell and then re-enter it:</p>
+<pre><code class="language-bash">exit()
+python manage.py shell
+</code></pre>
+<h3 id="step-8-re-importing-and-creating-another-record"><a class="header" href="#step-8-re-importing-and-creating-another-record">Step 8: Re-importing and Creating Another Record</a></h3>
+<p>Re-import the <code>Tour</code> model and create another record:</p>
+<pre><code class="language-python">from asia_tours.models import Tour
+
+tour2 = Tour(origin_country='Vietnam', destination_country='South Korea', number_of_nights=15, price=2500)
+tour2.save()
+
+print(tour2)  # Output: Tour 2: Vietnam to South Korea, 15 nights, $2500
+</code></pre>
+<h3 id="conclusion-4"><a class="header" href="#conclusion-4">Conclusion</a></h3>
+<p>In this tutorial, you have learned how to use the Django shell to add records to your database. You created instances of the <code>Tour</code> model, saved them to the database, and implemented a string representation for better readability. This process is crucial for managing your database records effectively and testing your Django application.</p>
+<p>In the next tutorial, we will cover how to render these records on a web page. Stay tuned for more advanced Django techniques.</p>
 
                     </main>
 
