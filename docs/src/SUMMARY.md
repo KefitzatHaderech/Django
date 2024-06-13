@@ -4,3 +4,4 @@
 - [Setup & Installation](./02.md)
 - [Django Basics](./03.md)
 - [Database Setup](./04.md)
+- [Adding Database Records](./05.md)
