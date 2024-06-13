@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="01.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="02.html"><strong aria-hidden="true">2.</strong> Setup & Installation</a></li><li class="chapter-item expanded "><a href="03.html"><strong aria-hidden="true">3.</strong> Django Basics</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="01.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="02.html"><strong aria-hidden="true">2.</strong> Setup & Installation</a></li><li class="chapter-item expanded "><a href="03.html"><strong aria-hidden="true">3.</strong> Django Basics</a></li><li class="chapter-item expanded "><a href="04.html"><strong aria-hidden="true">4.</strong> Database Setup</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -519,8 +519,170 @@ urlpatterns = [
 <pre><code>http://127.0.0.1:8000/asiatours/
 </code></pre>
 <p>You should see "Asia Tours Agency" displayed.</p>
-<h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
+<h2 id="conclusion-2"><a class="header" href="#conclusion-2">Conclusion</a></h2>
 <p>In this tutorial, we created a Django project and an application within it. We set up the necessary configurations and created a simple view to ensure everything is working correctly. In the next tutorial, we will dive deeper into models, databases, and migrations to expand our agency's functionality.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="database-setup"><a class="header" href="#database-setup">Database Setup</a></h1>
+<p>In this tutorial, we will set up the database for our Django application, focusing on using models to represent the data we want to store within our Asia Tours Agency application. We will go through creating a project, setting up an application, defining models, and applying migrations.</p>
+<h2 id="step-1-project-and-virtual-environment-setup"><a class="header" href="#step-1-project-and-virtual-environment-setup">Step 1: Project and Virtual Environment Setup</a></h2>
+<h3 id="create-and-activate-virtual-environment"><a class="header" href="#create-and-activate-virtual-environment">Create and Activate Virtual Environment</a></h3>
+<ol>
+<li>
+<p>Create a new directory for the project:</p>
+<pre><code class="language-bash">mkdir lesson3_migrate_sqlite3
+cd lesson3_migrate_sqlite3
+</code></pre>
+</li>
+<li>
+<p>Create and activate a virtual environment:</p>
+<pre><code class="language-bash">python -m venv env
+source env/bin/activate  # On Windows use `env\Scripts\activate`
+</code></pre>
+</li>
+</ol>
+<h3 id="install-django"><a class="header" href="#install-django">Install Django</a></h3>
+<p>Install Django in your virtual environment:</p>
+<pre><code class="language-bash">pip install django
+</code></pre>
+<h3 id="create-django-project"><a class="header" href="#create-django-project">Create Django Project</a></h3>
+<p>Create a new Django project named <code>worldtour</code>:</p>
+<pre><code class="language-bash">django-admin startproject worldtour
+cd worldtour
+</code></pre>
+<h3 id="create-django-application"><a class="header" href="#create-django-application">Create Django Application</a></h3>
+<p>Within the <code>worldtour</code> project directory, create a new Django application named <code>asiatoursagency</code>:</p>
+<pre><code class="language-bash">python manage.py startapp asiatoursagency
+</code></pre>
+<h2 id="step-2-define-models"><a class="header" href="#step-2-define-models">Step 2: Define Models</a></h2>
+<p>Models in Django provide a structured way to define the fields and behaviors of the data you want to store in your database.</p>
+<h3 id="edit-modelspy"><a class="header" href="#edit-modelspy">Edit <code>models.py</code></a></h3>
+<p>In the <code>asiatoursagency</code> application, open <code>models.py</code> and define the <code>Tour</code> model:</p>
+<pre><code class="language-python">from django.db import models
+
+class Tour(models.Model):
+    origin_country = models.CharField(max_length=64)
+    destination_country = models.CharField(max_length=64)
+    number_of_nights = models.IntegerField()
+    price = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.origin_country} to {self.destination_country} for {self.number_of_nights} nights at ${self.price}"
+</code></pre>
+<h3 id="explanation"><a class="header" href="#explanation">Explanation:</a></h3>
+<ul>
+<li><code>origin_country</code>: A character field to store the origin country, with a maximum length of 64 characters.</li>
+<li><code>destination_country</code>: A character field to store the destination country, also with a maximum length of 64 characters.</li>
+<li><code>number_of_nights</code>: An integer field to store the number of nights for the tour.</li>
+<li><code>price</code>: An integer field to store the price of the tour.</li>
+</ul>
+<h2 id="step-3-register-the-application"><a class="header" href="#step-3-register-the-application">Step 3: Register the Application</a></h2>
+<p>To make Django aware of the <code>asiatoursagency</code> application, you need to add it to the <code>INSTALLED_APPS</code> list in the <code>worldtour/settings.py</code> file:</p>
+<pre><code class="language-python">INSTALLED_APPS = [
+    ...
+    'asiatoursagency',
+]
+</code></pre>
+<h2 id="step-4-make-and-apply-migrations"><a class="header" href="#step-4-make-and-apply-migrations">Step 4: Make and Apply Migrations</a></h2>
+<p>Migrations are Django’s way of propagating changes you make to your models into your database schema. They ensure your database schema is up-to-date with your model definitions.</p>
+<h3 id="make-migrations"><a class="header" href="#make-migrations">Make Migrations</a></h3>
+<p>Generate migration files for your model changes:</p>
+<pre><code class="language-bash">python manage.py makemigrations
+</code></pre>
+<h3 id="apply-migrations"><a class="header" href="#apply-migrations">Apply Migrations</a></h3>
+<p>Apply the generated migrations to your database:</p>
+<pre><code class="language-bash">python manage.py migrate
+</code></pre>
+<h2 id="step-5-interact-with-the-database"><a class="header" href="#step-5-interact-with-the-database">Step 5: Interact with the Database</a></h2>
+<p>You can now interact with your database using the Django shell.</p>
+<h3 id="access-django-shell"><a class="header" href="#access-django-shell">Access Django Shell</a></h3>
+<p>Open the Django shell with the following command:</p>
+<pre><code class="language-bash">python manage.py shell
+</code></pre>
+<h3 id="create-a-tour-object"><a class="header" href="#create-a-tour-object">Create a Tour Object</a></h3>
+<p>Within the Django shell, create a new <code>Tour</code> object and save it to the database:</p>
+<pre><code class="language-python">from asiatoursagency.models import Tour
+
+tour1 = Tour(
+    origin_country="Japan",
+    destination_country="China",
+    number_of_nights=7,
+    price=1500
+)
+tour1.save()
+</code></pre>
+<h3 id="query-the-database"><a class="header" href="#query-the-database">Query the Database</a></h3>
+<p>You can query the database to retrieve <code>Tour</code> objects:</p>
+<pre><code class="language-python"># Get all tours
+all_tours = Tour.objects.all()
+for tour in all_tours:
+    print(tour)
+
+# Filter tours by destination country
+china_tours = Tour.objects.filter(destination_country="China")
+for tour in china_tours:
+    print(tour)
+</code></pre>
+<h2 id="database-configuration"><a class="header" href="#database-configuration">Database Configuration</a></h2>
+<p>By default, Django uses SQLite as its database engine. This is configured in the <code>worldtour/settings.py</code> file:</p>
+<pre><code class="language-python">DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+</code></pre>
+<h3 id="using-a-different-database"><a class="header" href="#using-a-different-database">Using a Different Database</a></h3>
+<p>If you want to use a different database (e.g., PostgreSQL), you need to update the <code>DATABASES</code> setting in <code>worldtour/settings.py</code>:</p>
+<pre><code class="language-python">DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'your_db_name',
+        'USER': 'your_db_user',
+        'PASSWORD': 'your_db_password',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+</code></pre>
+<p>Ensure you have the necessary database driver installed. For PostgreSQL, you would need <code>psycopg2</code>:</p>
+<pre><code class="language-bash">pip install psycopg2-binary
+</code></pre>
+<h2 id="step-6-migration-files-overview"><a class="header" href="#step-6-migration-files-overview">Step 6: Migration Files Overview</a></h2>
+<p>When you make migrations, Django generates migration files that describe the changes to your database schema. These files are located in the <code>migrations</code> directory of your application.</p>
+<h3 id="understanding-migration-files"><a class="header" href="#understanding-migration-files">Understanding Migration Files</a></h3>
+<p>Here is an example of a generated migration file:</p>
+<pre><code class="language-python"># Generated by Django on YYYY-MM-DD HH:MM
+
+from django.db import migrations, models
+
+class Migration(migrations.Migration):
+
+    initial = True
+
+    dependencies = []
+
+    operations = [
+        migrations.CreateModel(
+            name='Tour',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('origin_country', models.CharField(max_length=64)),
+                ('destination_country', models.CharField(max_length=64)),
+                ('number_of_nights', models.IntegerField()),
+                ('price', models.IntegerField()),
+            ],
+        ),
+    ]
+</code></pre>
+<h3 id="explanation-1"><a class="header" href="#explanation-1">Explanation:</a></h3>
+<ul>
+<li><code>initial = True</code>: Indicates this is the first migration for the <code>Tour</code> model.</li>
+<li><code>dependencies = []</code>: Specifies dependencies on other migrations.</li>
+<li><code>operations = [migrations.CreateModel(...)]</code>: Describes the creation of the <code>Tour</code> model with its fields.</li>
+</ul>
+<h2 id="conclusion-3"><a class="header" href="#conclusion-3">Conclusion</a></h2>
+<p>In this tutorial, we have set up the database for our Django application, created models, and applied migrations. We also explored how to interact with the database using Django's ORM.</p>
+<p>In the next part, we will explore how to interact with this database directly through Django shell and add tour records. Additionally, we will discuss the database configurations in <code>settings.py</code> and how to switch to different database management systems.</p>
+<p>Make sure to commit your changes and keep your project structure organized as you progress through your Django development journey.</p>
 
                     </main>
 
