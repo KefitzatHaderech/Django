@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Adding Database Records</title>
+        <title>Displaying Records</title>
 
 
         <!-- Custom HTML head -->
@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="01.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="02.html"><strong aria-hidden="true">2.</strong> Setup & Installation</a></li><li class="chapter-item expanded "><a href="03.html"><strong aria-hidden="true">3.</strong> Django Basics</a></li><li class="chapter-item expanded "><a href="04.html"><strong aria-hidden="true">4.</strong> Database Setup</a></li><li class="chapter-item expanded "><a href="05.html" class="active"><strong aria-hidden="true">5.</strong> Adding Database Records</a></li><li class="chapter-item expanded "><a href="06.html"><strong aria-hidden="true">6.</strong> Displaying Records</a></li><li class="chapter-item expanded "><a href="07.html"><strong aria-hidden="true">7.</strong> Admin Dashboard</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="01.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="02.html"><strong aria-hidden="true">2.</strong> Setup & Installation</a></li><li class="chapter-item expanded "><a href="03.html"><strong aria-hidden="true">3.</strong> Django Basics</a></li><li class="chapter-item expanded "><a href="04.html"><strong aria-hidden="true">4.</strong> Database Setup</a></li><li class="chapter-item expanded "><a href="05.html"><strong aria-hidden="true">5.</strong> Adding Database Records</a></li><li class="chapter-item expanded "><a href="06.html" class="active"><strong aria-hidden="true">6.</strong> Displaying Records</a></li><li class="chapter-item expanded "><a href="07.html"><strong aria-hidden="true">7.</strong> Admin Dashboard</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -173,74 +173,121 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="adding-database-records"><a class="header" href="#adding-database-records">Adding Database Records</a></h1>
-<p>In this tutorial, we will focus on adding records to the database in Django. We will use the Django shell, which provides an interface for interacting directly with our Django project's database. This allows us to create, read, update, and delete records with ease. The Django shell is an essential tool for testing and managing your database.</p>
-<h2 id="setting-up-the-django-shell"><a class="header" href="#setting-up-the-django-shell">Setting Up the Django Shell</a></h2>
-<h3 id="step-1-open-the-django-shell"><a class="header" href="#step-1-open-the-django-shell">Step 1: Open the Django Shell</a></h3>
-<p>First, ensure that your virtual environment is activated. Then, you can open the Django shell by running the following command:</p>
-<pre><code class="language-bash">python manage.py shell
+                        <h1 id="displaying-records"><a class="header" href="#displaying-records">Displaying Records</a></h1>
+<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p>In this tutorial, we will focus on rendering records stored in the database onto a web page using Django. We will move beyond displaying text in the Django shell and start displaying HTML content dynamically. This involves utilizing Django templates and context to render records from the database.</p>
+<h2 id="prerequisites"><a class="header" href="#prerequisites">Prerequisites</a></h2>
+<ul>
+<li>A working Django project.</li>
+<li>Basic knowledge of Django models and views.</li>
+<li>Familiarity with HTML.</li>
+</ul>
+<h2 id="step-by-step-guide"><a class="header" href="#step-by-step-guide">Step-by-Step Guide</a></h2>
+<h3 id="1-setting-up-the-project"><a class="header" href="#1-setting-up-the-project">1. Setting Up the Project</a></h3>
+<p>Ensure you have your virtual environment activated and the Django project running.</p>
+<pre><code class="language-bash">source env/bin/activate  # Activate your virtual environment
+python manage.py runserver  # Run the Django development server
 </code></pre>
-<p>This command opens an interactive shell specifically tied to your Django project.</p>
-<h3 id="step-2-importing-models"><a class="header" href="#step-2-importing-models">Step 2: Importing Models</a></h3>
-<p>Within the shell, you can import your models. For this tutorial, we will assume you have a model named <code>Tour</code> in an app called <code>AsiaTours</code>.</p>
-<pre><code class="language-python">from asia_tours.models import Tour
+<h3 id="2-create-the-html-template"><a class="header" href="#2-create-the-html-template">2. Create the HTML Template</a></h3>
+<p>First, create a folder structure for your templates. In your Django app, create a folder named <code>templates</code> and within it, another folder named <code>tours</code>.</p>
+<pre><code class="language-bash">mkdir -p your_app/templates/tours
 </code></pre>
-<h2 id="creating-records"><a class="header" href="#creating-records">Creating Records</a></h2>
-<h3 id="step-3-creating-an-instance-of-a-model"><a class="header" href="#step-3-creating-an-instance-of-a-model">Step 3: Creating an Instance of a Model</a></h3>
-<p>You can create a new instance of the <code>Tour</code> model by assigning values to its attributes. Let's create a tour with specific details:</p>
-<pre><code class="language-python">tour1 = Tour(origin_country='Japan', destination_country='China', number_of_nights=10, price=1500)
+<p>Inside the <code>tours</code> folder, create an <code>index.html</code> file.</p>
+<pre><code class="language-html">&lt;!-- your_app/templates/tours/index.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Asia Tours&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Asia Tours Schedule for June 2024&lt;/h1&gt;
+    &lt;ul&gt;
+        {% for tour in tours %}
+            &lt;li&gt;{{ tour }}&lt;/li&gt;
+        {% endfor %}
+    &lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </code></pre>
-<h3 id="step-4-saving-the-record-to-the-database"><a class="header" href="#step-4-saving-the-record-to-the-database">Step 4: Saving the Record to the Database</a></h3>
-<p>After creating the instance, you need to save it to the database:</p>
-<pre><code class="language-python">tour1.save()
+<h3 id="3-update-the-view"><a class="header" href="#3-update-the-view">3. Update the View</a></h3>
+<p>Modify your <code>views.py</code> to render this template and pass the necessary context.</p>
+<pre><code class="language-python"># your_app/views.py
+from django.shortcuts import render
+from .models import Tour
+
+def index(request):
+    tours = Tour.objects.all()
+    context = {
+        'tours': tours
+    }
+    return render(request, 'tours/index.html', context)
 </code></pre>
-<p>By calling the <code>save()</code> method, Django writes the record to the database.</p>
-<h3 id="step-5-accessing-attributes-of-the-record"><a class="header" href="#step-5-accessing-attributes-of-the-record">Step 5: Accessing Attributes of the Record</a></h3>
-<p>You can access the attributes of the saved record to verify the values:</p>
-<pre><code class="language-python">print(tour1.origin_country)  # Output: Japan
-print(tour1.destination_country)  # Output: China
-print(tour1.number_of_nights)  # Output: 10
-print(tour1.price)  # Output: 1500
+<h3 id="4-define-the-url"><a class="header" href="#4-define-the-url">4. Define the URL</a></h3>
+<p>Ensure your URL configuration points to this view. Modify your <code>urls.py</code> accordingly.</p>
+<pre><code class="language-python"># your_app/urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+]
 </code></pre>
-<h3 id="step-6-implementing-a-string-representation"><a class="header" href="#step-6-implementing-a-string-representation">Step 6: Implementing a String Representation</a></h3>
-<p>To improve the readability of your model instances, you can define a <code>__str__</code> method in the <code>Tour</code> model. This method returns a human-readable string representation of the model instance.</p>
-<p>Edit your <code>Tour</code> model as follows:</p>
-<pre><code class="language-python">class Tour(models.Model):
-    origin_country = models.CharField(max_length=100)
-    destination_country = models.CharField(max_length=100)
+<h3 id="5-create-a-model-if-not-already-done"><a class="header" href="#5-create-a-model-if-not-already-done">5. Create a Model (if not already done)</a></h3>
+<p>If you haven't already, define a model for your tours in <code>models.py</code>.</p>
+<pre><code class="language-python"># your_app/models.py
+from django.db import models
+
+class Tour(models.Model):
+    origin = models.CharField(max_length=100)
+    destination = models.CharField(max_length=100)
     number_of_nights = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f'Tour {self.id}: {self.origin_country} to {self.destination_country}, {self.number_of_nights} nights, ${self.price}'
+        return f"{self.origin} to {self.destination} - {self.number_of_nights} nights - ${self.price}"
 </code></pre>
-<h3 id="step-7-exiting-and-re-entering-the-shell"><a class="header" href="#step-7-exiting-and-re-entering-the-shell">Step 7: Exiting and Re-entering the Shell</a></h3>
-<p>To apply the changes to your model, exit the shell and then re-enter it:</p>
-<pre><code class="language-bash">exit()
-python manage.py shell
+<p>Run the migrations to create this model in your database.</p>
+<pre><code class="language-bash">python manage.py makemigrations
+python manage.py migrate
 </code></pre>
-<h3 id="step-8-re-importing-and-creating-another-record"><a class="header" href="#step-8-re-importing-and-creating-another-record">Step 8: Re-importing and Creating Another Record</a></h3>
-<p>Re-import the <code>Tour</code> model and create another record:</p>
-<pre><code class="language-python">from asia_tours.models import Tour
+<h3 id="6-add-records-via-django-shell"><a class="header" href="#6-add-records-via-django-shell">6. Add Records via Django Shell</a></h3>
+<p>To see records on the web page, you need to add some data. Use the Django shell for this purpose.</p>
+<pre><code class="language-bash">python manage.py shell
+</code></pre>
+<p>In the shell, create some records:</p>
+<pre><code class="language-python">from your_app.models import Tour
 
-tour2 = Tour(origin_country='Vietnam', destination_country='South Korea', number_of_nights=15, price=2500)
+tour1 = Tour(origin='Malaysia', destination='Japan', number_of_nights=7, price=1000.00)
+tour1.save()
+
+tour2 = Tour(origin='Thailand', destination='Singapore', number_of_nights=5, price=750.00)
 tour2.save()
-
-print(tour2)  # Output: Tour 2: Vietnam to South Korea, 15 nights, $2500
 </code></pre>
-<h3 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h3>
-<p>In this tutorial, you have learned how to use the Django shell to add records to your database. You created instances of the <code>Tour</code> model, saved them to the database, and implemented a string representation for better readability. This process is crucial for managing your database records effectively and testing your Django application.</p>
-<p>In the next tutorial, we will cover how to render these records on a web page. Stay tuned for more advanced Django techniques.</p>
+<h3 id="7-view-the-result"><a class="header" href="#7-view-the-result">7. View the Result</a></h3>
+<p>Navigate to the URL where your project is running, typically <code>http://127.0.0.1:8000/</code>. You should see your tours listed on the page.</p>
+<h3 id="8-adding-more-records"><a class="header" href="#8-adding-more-records">8. Adding More Records</a></h3>
+<p>You can add more records either through the Django shell or later through the Django admin interface. For example:</p>
+<pre><code class="language-python">tour3 = Tour(origin='Indonesia', destination='Philippines', number_of_nights=10, price=1200.00)
+tour3.save()
+</code></pre>
+<p>Refresh your web page to see the new record displayed.</p>
+<h3 id="9-next-steps"><a class="header" href="#9-next-steps">9. Next Steps</a></h3>
+<p>In the next tutorial, we will explore the Django admin interface, which provides a robust tool for managing your data without needing to use the shell.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>This tutorial demonstrated how to render records from a Django model into an HTML template. By leveraging Django’s template system and context dictionaries, you can efficiently display dynamic content on your web pages.</p>
+<p>This approach showcases Django's powerful interaction with databases and templates, making it an effective framework for web development.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="04.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="05.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="06.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="07.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -250,11 +297,11 @@ print(tour2)  # Output: Tour 2: Vietnam to South Korea, 15 nights, $2500
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="04.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="05.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="06.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="07.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

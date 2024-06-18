@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Adding Database Records</title>
+        <title>Admin Dashboard</title>
 
 
         <!-- Custom HTML head -->
@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="01.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="02.html"><strong aria-hidden="true">2.</strong> Setup & Installation</a></li><li class="chapter-item expanded "><a href="03.html"><strong aria-hidden="true">3.</strong> Django Basics</a></li><li class="chapter-item expanded "><a href="04.html"><strong aria-hidden="true">4.</strong> Database Setup</a></li><li class="chapter-item expanded "><a href="05.html" class="active"><strong aria-hidden="true">5.</strong> Adding Database Records</a></li><li class="chapter-item expanded "><a href="06.html"><strong aria-hidden="true">6.</strong> Displaying Records</a></li><li class="chapter-item expanded "><a href="07.html"><strong aria-hidden="true">7.</strong> Admin Dashboard</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="01.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="02.html"><strong aria-hidden="true">2.</strong> Setup & Installation</a></li><li class="chapter-item expanded "><a href="03.html"><strong aria-hidden="true">3.</strong> Django Basics</a></li><li class="chapter-item expanded "><a href="04.html"><strong aria-hidden="true">4.</strong> Database Setup</a></li><li class="chapter-item expanded "><a href="05.html"><strong aria-hidden="true">5.</strong> Adding Database Records</a></li><li class="chapter-item expanded "><a href="06.html"><strong aria-hidden="true">6.</strong> Displaying Records</a></li><li class="chapter-item expanded "><a href="07.html" class="active"><strong aria-hidden="true">7.</strong> Admin Dashboard</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -173,76 +173,99 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="adding-database-records"><a class="header" href="#adding-database-records">Adding Database Records</a></h1>
-<p>In this tutorial, we will focus on adding records to the database in Django. We will use the Django shell, which provides an interface for interacting directly with our Django project's database. This allows us to create, read, update, and delete records with ease. The Django shell is an essential tool for testing and managing your database.</p>
-<h2 id="setting-up-the-django-shell"><a class="header" href="#setting-up-the-django-shell">Setting Up the Django Shell</a></h2>
-<h3 id="step-1-open-the-django-shell"><a class="header" href="#step-1-open-the-django-shell">Step 1: Open the Django Shell</a></h3>
-<p>First, ensure that your virtual environment is activated. Then, you can open the Django shell by running the following command:</p>
-<pre><code class="language-bash">python manage.py shell
+                        <h1 id="admin-dashboard"><a class="header" href="#admin-dashboard">Admin Dashboard</a></h1>
+<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p>In this tutorial, we will explore the Django admin dashboard, an essential feature that allows administrators to manage data in a user-friendly way. This tutorial will cover creating a superuser, registering models, and utilizing the admin interface to add and edit data. The Django admin is a powerful tool for backend developers to efficiently manage application data without manually interacting with the database through command-line interfaces.</p>
+<h2 id="prerequisites"><a class="header" href="#prerequisites">Prerequisites</a></h2>
+<p>Before proceeding with this tutorial, ensure you have the following:</p>
+<ul>
+<li>A basic understanding of Django and Python.</li>
+<li>A Django project set up and running.</li>
+<li>Familiarity with Django models and the Django ORM.</li>
+</ul>
+<h2 id="step-1-creating-a-superuser"><a class="header" href="#step-1-creating-a-superuser">Step 1: Creating a Superuser</a></h2>
+<p>To access the Django admin dashboard, we first need to create a superuser. A superuser is a user with all permissions granted, allowing them to manage the entire site.</p>
+<p>Open your terminal and navigate to your Django project directory. Run the following command to create a superuser:</p>
+<pre><code class="language-sh">python manage.py createsuperuser
 </code></pre>
-<p>This command opens an interactive shell specifically tied to your Django project.</p>
-<h3 id="step-2-importing-models"><a class="header" href="#step-2-importing-models">Step 2: Importing Models</a></h3>
-<p>Within the shell, you can import your models. For this tutorial, we will assume you have a model named <code>Tour</code> in an app called <code>AsiaTours</code>.</p>
-<pre><code class="language-python">from asia_tours.models import Tour
+<p>You will be prompted to enter a username, email address, and password. For demonstration purposes, you can use the following credentials (but ensure to use a strong password in production):</p>
+<pre><code>Username: admin
+Email: admin@example.com
+Password: admin123
 </code></pre>
-<h2 id="creating-records"><a class="header" href="#creating-records">Creating Records</a></h2>
-<h3 id="step-3-creating-an-instance-of-a-model"><a class="header" href="#step-3-creating-an-instance-of-a-model">Step 3: Creating an Instance of a Model</a></h3>
-<p>You can create a new instance of the <code>Tour</code> model by assigning values to its attributes. Let's create a tour with specific details:</p>
-<pre><code class="language-python">tour1 = Tour(origin_country='Japan', destination_country='China', number_of_nights=10, price=1500)
-</code></pre>
-<h3 id="step-4-saving-the-record-to-the-database"><a class="header" href="#step-4-saving-the-record-to-the-database">Step 4: Saving the Record to the Database</a></h3>
-<p>After creating the instance, you need to save it to the database:</p>
-<pre><code class="language-python">tour1.save()
-</code></pre>
-<p>By calling the <code>save()</code> method, Django writes the record to the database.</p>
-<h3 id="step-5-accessing-attributes-of-the-record"><a class="header" href="#step-5-accessing-attributes-of-the-record">Step 5: Accessing Attributes of the Record</a></h3>
-<p>You can access the attributes of the saved record to verify the values:</p>
-<pre><code class="language-python">print(tour1.origin_country)  # Output: Japan
-print(tour1.destination_country)  # Output: China
-print(tour1.number_of_nights)  # Output: 10
-print(tour1.price)  # Output: 1500
-</code></pre>
-<h3 id="step-6-implementing-a-string-representation"><a class="header" href="#step-6-implementing-a-string-representation">Step 6: Implementing a String Representation</a></h3>
-<p>To improve the readability of your model instances, you can define a <code>__str__</code> method in the <code>Tour</code> model. This method returns a human-readable string representation of the model instance.</p>
-<p>Edit your <code>Tour</code> model as follows:</p>
-<pre><code class="language-python">class Tour(models.Model):
+<h2 id="step-2-registering-models-in-admin"><a class="header" href="#step-2-registering-models-in-admin">Step 2: Registering Models in Admin</a></h2>
+<p>Next, we need to register our models with the Django admin site. This allows the models to be managed through the admin interface.</p>
+<p>Consider a simple model for a tour agency application:</p>
+<pre><code class="language-python"># models.py
+
+from django.db import models
+
+class Tour(models.Model):
     origin_country = models.CharField(max_length=100)
     destination_country = models.CharField(max_length=100)
-    number_of_nights = models.IntegerField()
+    number_of_nights = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f'Tour {self.id}: {self.origin_country} to {self.destination_country}, {self.number_of_nights} nights, ${self.price}'
+        return f"{self.origin_country} to {self.destination_country} - {self.number_of_nights} nights"
 </code></pre>
-<h3 id="step-7-exiting-and-re-entering-the-shell"><a class="header" href="#step-7-exiting-and-re-entering-the-shell">Step 7: Exiting and Re-entering the Shell</a></h3>
-<p>To apply the changes to your model, exit the shell and then re-enter it:</p>
-<pre><code class="language-bash">exit()
-python manage.py shell
-</code></pre>
-<h3 id="step-8-re-importing-and-creating-another-record"><a class="header" href="#step-8-re-importing-and-creating-another-record">Step 8: Re-importing and Creating Another Record</a></h3>
-<p>Re-import the <code>Tour</code> model and create another record:</p>
-<pre><code class="language-python">from asia_tours.models import Tour
+<p>To register this model, create or update the <code>admin.py</code> file in your application directory:</p>
+<pre><code class="language-python"># admin.py
 
-tour2 = Tour(origin_country='Vietnam', destination_country='South Korea', number_of_nights=15, price=2500)
-tour2.save()
+from django.contrib import admin
+from .models import Tour
 
-print(tour2)  # Output: Tour 2: Vietnam to South Korea, 15 nights, $2500
+admin.site.register(Tour)
 </code></pre>
-<h3 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h3>
-<p>In this tutorial, you have learned how to use the Django shell to add records to your database. You created instances of the <code>Tour</code> model, saved them to the database, and implemented a string representation for better readability. This process is crucial for managing your database records effectively and testing your Django application.</p>
-<p>In the next tutorial, we will cover how to render these records on a web page. Stay tuned for more advanced Django techniques.</p>
+<h2 id="step-3-accessing-the-admin-dashboard"><a class="header" href="#step-3-accessing-the-admin-dashboard">Step 3: Accessing the Admin Dashboard</a></h2>
+<p>Start the Django development server by running:</p>
+<pre><code class="language-sh">python manage.py runserver
+</code></pre>
+<p>Open your web browser and navigate to <code>http://127.0.0.1:8000/admin/</code>. You will be prompted to log in with the superuser credentials you created earlier.</p>
+<p>Once logged in, you will see the Django administration dashboard. The <code>Tour</code> model will be listed under your application name.</p>
+<h2 id="step-4-adding-and-editing-data"><a class="header" href="#step-4-adding-and-editing-data">Step 4: Adding and Editing Data</a></h2>
+<p>In the Django admin dashboard, you can add and edit data for your models. Follow these steps:</p>
+<ol>
+<li>Click on the <code>Tours</code> link in the admin interface.</li>
+<li>Click the "Add tour" button to create a new tour entry.</li>
+<li>Fill in the form with the required details:
+<ul>
+<li>Origin Country: South Korea</li>
+<li>Destination Country: China</li>
+<li>Number of Nights: 7</li>
+<li>Price: 2500.00</li>
+</ul>
+</li>
+<li>Click "Save" to add the tour.</li>
+</ol>
+<p>You can also edit existing tours by clicking on the tour entry and modifying the fields. Changes can be saved by clicking the "Save" button again.</p>
+<h2 id="step-5-managing-users-and-permissions"><a class="header" href="#step-5-managing-users-and-permissions">Step 5: Managing Users and Permissions</a></h2>
+<p>The Django admin interface also allows you to manage users and their permissions. Here’s how you can do it:</p>
+<ol>
+<li>Click on the <code>Users</code> link in the admin interface.</li>
+<li>Click the "Add user" button to create a new user.</li>
+<li>Fill in the required details and set a strong password.</li>
+<li>In the user edit form, you can assign the user to groups and set specific permissions.</li>
+<li>To grant a user access to the admin site, ensure the "Staff status" checkbox is selected.</li>
+</ol>
+<p>For instance, to create a new user named Nancy with admin access:</p>
+<ul>
+<li>Username: Nancy</li>
+<li>Password: Nano$123</li>
+</ul>
+<p>Ensure "Staff status" is checked to allow Nancy to log in to the admin site.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>The Django admin dashboard is a powerful feature that allows efficient management of application data. By creating a superuser, registering models, and utilizing the admin interface, administrators can easily add, edit, and manage data without directly interacting with the database through command-line tools.</p>
+<p>This concludes our tutorial on the Django admin dashboard. We encourage you to explore the various features and customization options available in the Django admin to enhance your application's data management capabilities.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="04.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="06.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="06.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -250,13 +273,10 @@ print(tour2)  # Output: Tour 2: Vietnam to South Korea, 15 nights, $2500
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="04.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="06.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="06.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>

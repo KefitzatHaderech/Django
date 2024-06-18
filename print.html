@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="01.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="02.html"><strong aria-hidden="true">2.</strong> Setup & Installation</a></li><li class="chapter-item expanded "><a href="03.html"><strong aria-hidden="true">3.</strong> Django Basics</a></li><li class="chapter-item expanded "><a href="04.html"><strong aria-hidden="true">4.</strong> Database Setup</a></li><li class="chapter-item expanded "><a href="05.html"><strong aria-hidden="true">5.</strong> Adding Database Records</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="01.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="02.html"><strong aria-hidden="true">2.</strong> Setup & Installation</a></li><li class="chapter-item expanded "><a href="03.html"><strong aria-hidden="true">3.</strong> Django Basics</a></li><li class="chapter-item expanded "><a href="04.html"><strong aria-hidden="true">4.</strong> Database Setup</a></li><li class="chapter-item expanded "><a href="05.html"><strong aria-hidden="true">5.</strong> Adding Database Records</a></li><li class="chapter-item expanded "><a href="06.html"><strong aria-hidden="true">6.</strong> Displaying Records</a></li><li class="chapter-item expanded "><a href="07.html"><strong aria-hidden="true">7.</strong> Admin Dashboard</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -741,6 +741,195 @@ print(tour2)  # Output: Tour 2: Vietnam to South Korea, 15 nights, $2500
 <h3 id="conclusion-4"><a class="header" href="#conclusion-4">Conclusion</a></h3>
 <p>In this tutorial, you have learned how to use the Django shell to add records to your database. You created instances of the <code>Tour</code> model, saved them to the database, and implemented a string representation for better readability. This process is crucial for managing your database records effectively and testing your Django application.</p>
 <p>In the next tutorial, we will cover how to render these records on a web page. Stay tuned for more advanced Django techniques.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="displaying-records"><a class="header" href="#displaying-records">Displaying Records</a></h1>
+<h2 id="introduction-1"><a class="header" href="#introduction-1">Introduction</a></h2>
+<p>In this tutorial, we will focus on rendering records stored in the database onto a web page using Django. We will move beyond displaying text in the Django shell and start displaying HTML content dynamically. This involves utilizing Django templates and context to render records from the database.</p>
+<h2 id="prerequisites-2"><a class="header" href="#prerequisites-2">Prerequisites</a></h2>
+<ul>
+<li>A working Django project.</li>
+<li>Basic knowledge of Django models and views.</li>
+<li>Familiarity with HTML.</li>
+</ul>
+<h2 id="step-by-step-guide"><a class="header" href="#step-by-step-guide">Step-by-Step Guide</a></h2>
+<h3 id="1-setting-up-the-project"><a class="header" href="#1-setting-up-the-project">1. Setting Up the Project</a></h3>
+<p>Ensure you have your virtual environment activated and the Django project running.</p>
+<pre><code class="language-bash">source env/bin/activate  # Activate your virtual environment
+python manage.py runserver  # Run the Django development server
+</code></pre>
+<h3 id="2-create-the-html-template"><a class="header" href="#2-create-the-html-template">2. Create the HTML Template</a></h3>
+<p>First, create a folder structure for your templates. In your Django app, create a folder named <code>templates</code> and within it, another folder named <code>tours</code>.</p>
+<pre><code class="language-bash">mkdir -p your_app/templates/tours
+</code></pre>
+<p>Inside the <code>tours</code> folder, create an <code>index.html</code> file.</p>
+<pre><code class="language-html">&lt;!-- your_app/templates/tours/index.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Asia Tours&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Asia Tours Schedule for June 2024&lt;/h1&gt;
+    &lt;ul&gt;
+        {% for tour in tours %}
+            &lt;li&gt;{{ tour }}&lt;/li&gt;
+        {% endfor %}
+    &lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3 id="3-update-the-view"><a class="header" href="#3-update-the-view">3. Update the View</a></h3>
+<p>Modify your <code>views.py</code> to render this template and pass the necessary context.</p>
+<pre><code class="language-python"># your_app/views.py
+from django.shortcuts import render
+from .models import Tour
+
+def index(request):
+    tours = Tour.objects.all()
+    context = {
+        'tours': tours
+    }
+    return render(request, 'tours/index.html', context)
+</code></pre>
+<h3 id="4-define-the-url"><a class="header" href="#4-define-the-url">4. Define the URL</a></h3>
+<p>Ensure your URL configuration points to this view. Modify your <code>urls.py</code> accordingly.</p>
+<pre><code class="language-python"># your_app/urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+]
+</code></pre>
+<h3 id="5-create-a-model-if-not-already-done"><a class="header" href="#5-create-a-model-if-not-already-done">5. Create a Model (if not already done)</a></h3>
+<p>If you haven't already, define a model for your tours in <code>models.py</code>.</p>
+<pre><code class="language-python"># your_app/models.py
+from django.db import models
+
+class Tour(models.Model):
+    origin = models.CharField(max_length=100)
+    destination = models.CharField(max_length=100)
+    number_of_nights = models.IntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.origin} to {self.destination} - {self.number_of_nights} nights - ${self.price}"
+</code></pre>
+<p>Run the migrations to create this model in your database.</p>
+<pre><code class="language-bash">python manage.py makemigrations
+python manage.py migrate
+</code></pre>
+<h3 id="6-add-records-via-django-shell"><a class="header" href="#6-add-records-via-django-shell">6. Add Records via Django Shell</a></h3>
+<p>To see records on the web page, you need to add some data. Use the Django shell for this purpose.</p>
+<pre><code class="language-bash">python manage.py shell
+</code></pre>
+<p>In the shell, create some records:</p>
+<pre><code class="language-python">from your_app.models import Tour
+
+tour1 = Tour(origin='Malaysia', destination='Japan', number_of_nights=7, price=1000.00)
+tour1.save()
+
+tour2 = Tour(origin='Thailand', destination='Singapore', number_of_nights=5, price=750.00)
+tour2.save()
+</code></pre>
+<h3 id="7-view-the-result"><a class="header" href="#7-view-the-result">7. View the Result</a></h3>
+<p>Navigate to the URL where your project is running, typically <code>http://127.0.0.1:8000/</code>. You should see your tours listed on the page.</p>
+<h3 id="8-adding-more-records"><a class="header" href="#8-adding-more-records">8. Adding More Records</a></h3>
+<p>You can add more records either through the Django shell or later through the Django admin interface. For example:</p>
+<pre><code class="language-python">tour3 = Tour(origin='Indonesia', destination='Philippines', number_of_nights=10, price=1200.00)
+tour3.save()
+</code></pre>
+<p>Refresh your web page to see the new record displayed.</p>
+<h3 id="9-next-steps"><a class="header" href="#9-next-steps">9. Next Steps</a></h3>
+<p>In the next tutorial, we will explore the Django admin interface, which provides a robust tool for managing your data without needing to use the shell.</p>
+<h2 id="conclusion-5"><a class="header" href="#conclusion-5">Conclusion</a></h2>
+<p>This tutorial demonstrated how to render records from a Django model into an HTML template. By leveraging Django’s template system and context dictionaries, you can efficiently display dynamic content on your web pages.</p>
+<p>This approach showcases Django's powerful interaction with databases and templates, making it an effective framework for web development.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="admin-dashboard"><a class="header" href="#admin-dashboard">Admin Dashboard</a></h1>
+<h2 id="introduction-2"><a class="header" href="#introduction-2">Introduction</a></h2>
+<p>In this tutorial, we will explore the Django admin dashboard, an essential feature that allows administrators to manage data in a user-friendly way. This tutorial will cover creating a superuser, registering models, and utilizing the admin interface to add and edit data. The Django admin is a powerful tool for backend developers to efficiently manage application data without manually interacting with the database through command-line interfaces.</p>
+<h2 id="prerequisites-3"><a class="header" href="#prerequisites-3">Prerequisites</a></h2>
+<p>Before proceeding with this tutorial, ensure you have the following:</p>
+<ul>
+<li>A basic understanding of Django and Python.</li>
+<li>A Django project set up and running.</li>
+<li>Familiarity with Django models and the Django ORM.</li>
+</ul>
+<h2 id="step-1-creating-a-superuser"><a class="header" href="#step-1-creating-a-superuser">Step 1: Creating a Superuser</a></h2>
+<p>To access the Django admin dashboard, we first need to create a superuser. A superuser is a user with all permissions granted, allowing them to manage the entire site.</p>
+<p>Open your terminal and navigate to your Django project directory. Run the following command to create a superuser:</p>
+<pre><code class="language-sh">python manage.py createsuperuser
+</code></pre>
+<p>You will be prompted to enter a username, email address, and password. For demonstration purposes, you can use the following credentials (but ensure to use a strong password in production):</p>
+<pre><code>Username: admin
+Email: admin@example.com
+Password: admin123
+</code></pre>
+<h2 id="step-2-registering-models-in-admin"><a class="header" href="#step-2-registering-models-in-admin">Step 2: Registering Models in Admin</a></h2>
+<p>Next, we need to register our models with the Django admin site. This allows the models to be managed through the admin interface.</p>
+<p>Consider a simple model for a tour agency application:</p>
+<pre><code class="language-python"># models.py
+
+from django.db import models
+
+class Tour(models.Model):
+    origin_country = models.CharField(max_length=100)
+    destination_country = models.CharField(max_length=100)
+    number_of_nights = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.origin_country} to {self.destination_country} - {self.number_of_nights} nights"
+</code></pre>
+<p>To register this model, create or update the <code>admin.py</code> file in your application directory:</p>
+<pre><code class="language-python"># admin.py
+
+from django.contrib import admin
+from .models import Tour
+
+admin.site.register(Tour)
+</code></pre>
+<h2 id="step-3-accessing-the-admin-dashboard"><a class="header" href="#step-3-accessing-the-admin-dashboard">Step 3: Accessing the Admin Dashboard</a></h2>
+<p>Start the Django development server by running:</p>
+<pre><code class="language-sh">python manage.py runserver
+</code></pre>
+<p>Open your web browser and navigate to <code>http://127.0.0.1:8000/admin/</code>. You will be prompted to log in with the superuser credentials you created earlier.</p>
+<p>Once logged in, you will see the Django administration dashboard. The <code>Tour</code> model will be listed under your application name.</p>
+<h2 id="step-4-adding-and-editing-data"><a class="header" href="#step-4-adding-and-editing-data">Step 4: Adding and Editing Data</a></h2>
+<p>In the Django admin dashboard, you can add and edit data for your models. Follow these steps:</p>
+<ol>
+<li>Click on the <code>Tours</code> link in the admin interface.</li>
+<li>Click the "Add tour" button to create a new tour entry.</li>
+<li>Fill in the form with the required details:
+<ul>
+<li>Origin Country: South Korea</li>
+<li>Destination Country: China</li>
+<li>Number of Nights: 7</li>
+<li>Price: 2500.00</li>
+</ul>
+</li>
+<li>Click "Save" to add the tour.</li>
+</ol>
+<p>You can also edit existing tours by clicking on the tour entry and modifying the fields. Changes can be saved by clicking the "Save" button again.</p>
+<h2 id="step-5-managing-users-and-permissions"><a class="header" href="#step-5-managing-users-and-permissions">Step 5: Managing Users and Permissions</a></h2>
+<p>The Django admin interface also allows you to manage users and their permissions. Here’s how you can do it:</p>
+<ol>
+<li>Click on the <code>Users</code> link in the admin interface.</li>
+<li>Click the "Add user" button to create a new user.</li>
+<li>Fill in the required details and set a strong password.</li>
+<li>In the user edit form, you can assign the user to groups and set specific permissions.</li>
+<li>To grant a user access to the admin site, ensure the "Staff status" checkbox is selected.</li>
+</ol>
+<p>For instance, to create a new user named Nancy with admin access:</p>
+<ul>
+<li>Username: Nancy</li>
+<li>Password: Nano$123</li>
+</ul>
+<p>Ensure "Staff status" is checked to allow Nancy to log in to the admin site.</p>
+<h2 id="conclusion-6"><a class="header" href="#conclusion-6">Conclusion</a></h2>
+<p>The Django admin dashboard is a powerful feature that allows efficient management of application data. By creating a superuser, registering models, and utilizing the admin interface, administrators can easily add, edit, and manage data without directly interacting with the database through command-line tools.</p>
+<p>This concludes our tutorial on the Django admin dashboard. We encourage you to explore the various features and customization options available in the Django admin to enhance your application's data management capabilities.</p>
 
                     </main>
 
